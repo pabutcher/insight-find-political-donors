@@ -35,14 +35,14 @@ def find_political_donors(inputf,outputz,outputd):
 	    DataBank.TRANSACTION_AMT=DataBank.TRANSACTION_AMT.astype(float) #set to float
 	#Read input file into dataframe
 	inheaders = ["CMTE_ID","AMNDT_IND","RPT_TP","TRANSACTION_PGI","IMAGE_NUM","TRANSACTION_TP","ENTITY_TP","NAME","CITY","STATE","ZIP_CODE","EMPLOYER","OCCUPATION","TRANSACTION_DT","TRANSACTION_AMT","OTHER_ID","TRAN_ID","FILE_NUM","MEMO_CD","MEMO_TEXT","SUB_ID"]
-	indata = pd.read_csv(infile, sep="|", header = None, names = inheaders)
+	indata = pd.read_csv(infile, sep="|", header = None, names = inheaders,converters={'TRANSACTION_DT': lambda x: str(x),'ZIP_CODE': lambda x: str(x)})
 	indata=indata[pd.isnull(indata.OTHER_ID)].reset_index(drop=True) #Ignore where OTHER_ID is NOT BLANK. Reset index.
 	
     #Main loop
 	#Using for loop to simulate streaming data
 	for x in range(len(indata)):
 	    #Get current zip and CMTE. Saves time as will call more than once.
-	    in_zip = int(str(indata.ZIP_CODE[x])[:5])
+	    in_zip = str(indata.ZIP_CODE[x])[:5]
 	    in_CMTE_ID = indata.CMTE_ID[x]
 	    #Update databank
 	    DataBank=DataBank.append(pd.DataFrame([[in_CMTE_ID,in_zip,indata.TRANSACTION_DT[x],indata.TRANSACTION_AMT[x]]],columns=DB_header),ignore_index=True)
@@ -54,7 +54,7 @@ def find_political_donors(inputf,outputz,outputd):
 	    tot_fromzip=np.sum(ziptrans)
 	    #append zipcode file
 	    file = open(outzipfile,"a")
-	    file.write(in_CMTE_ID + '|' + str(in_zip) + '|' + str(median_fromzip) + '|' + str(num_fromzip) + '|' + str(tot_fromzip) + '\n')
+	    file.write(in_CMTE_ID + '|' + str(in_zip) + '|' + str(median_fromzip) + '|' + str(num_fromzip) + '|' + str(int(tot_fromzip)) + '\n')
 	    file.close()
 	    #Get vals for date file
 	    date_df=DataBank.groupby(['CMTE_ID', 'TRANSACTION_DT']).agg({'TRANSACTION_AMT' :['median','count','sum']})
