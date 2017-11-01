@@ -54,9 +54,12 @@ def find_political_donors(inputf,outputz,outputd):
 	inheaders = ["CMTE_ID","AMNDT_IND","RPT_TP","TRANSACTION_PGI","IMAGE_NUM","TRANSACTION_TP","ENTITY_TP","NAME","CITY","STATE","ZIP_CODE","EMPLOYER","OCCUPATION","TRANSACTION_DT","TRANSACTION_AMT","OTHER_ID","TRAN_ID","FILE_NUM","MEMO_CD","MEMO_TEXT","SUB_ID"]
 	indata = pd.read_csv(infile, sep="|", header = None, names = inheaders,converters={'TRANSACTION_DT': lambda x: str(x),'ZIP_CODE': lambda x: str(x)})
 	#Remove bad values
-	indata=indata[pd.isnull(indata.OTHER_ID)].reset_index(drop=True) #Ignore where OTHER_ID is NOT BLANK. Reset index.
-	indata=indata[pd.isnull(indata.CMTE_ID)==False].reset_index(drop=True) #Check for missing CMTE 
-	indata=indata[pd.isnull(indata.TRANSACTION_AMT)==False].reset_index(drop=True) #Check for missing TRANSACTION_AMT 
+	if (any(pd.isnull(indata.OTHER_ID)==False)):
+		indata=indata[pd.isnull(indata.OTHER_ID)].reset_index(drop=True) #Ignore where OTHER_ID is NOT BLANK. Reset index.
+	if (any(pd.isnull(indata.CMTE_ID))):
+		indata=indata[pd.isnull(indata.CMTE_ID)==False].reset_index(drop=True) #Check for missing CMTE 
+	if (any(pd.isnull(indata.TRANSACTION_AMT))):
+		indata=indata[pd.isnull(indata.TRANSACTION_AMT)==False].reset_index(drop=True) #Check for missing TRANSACTION_AMT 
 	
     #Main loop
 	#Using for loop to simulate streaming data
