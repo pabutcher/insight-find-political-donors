@@ -16,7 +16,7 @@ Or by using run.sh in main folder
 # Input file
 Input file is expected to be pipe '|' separated with each line a new donation. Columns are in order:  "CMTE_ID","AMNDT_IND","RPT_TP","TRANSACTION_PGI","IMAGE_NUM","TRANSACTION_TP","ENTITY_TP","NAME","CITY","STATE","ZIP_CODE","EMPLOYER","OCCUPATION","TRANSACTION_DT","TRANSACTION_AMT","OTHER_ID","TRAN_ID","FILE_NUM","MEMO_CD","MEMO_TEXT","SUB_ID"
 
-Only lines with "OTHER_ID" empty are used. All other donations are ignored and not used in output files.
+Only lines with "OTHER_ID" empty are used. All other donations are ignored and not used in output files. If ZIP_CODE is invalid the value is not used for zipcode calculations, but IS used for date calculations. If date is invalid the value is not used for date calculations, but IS used for zipcode calculations.
 
 # Output files
 1) medianvals_by_zip: Each line contains a new donation with a)recipient(CMTE_ID), b)zipcode, c)median from zipcode  for recipient, d)number of donations from zipcode for recipient, and e)total amount donated from zipcode to recipient. In that order.
